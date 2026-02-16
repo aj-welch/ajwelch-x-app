@@ -44,3 +44,11 @@ ci/
 .idea
 
 .eslintcache
+
+# Nix
+.direnv/
+result
+result-*
+
+# Local environment
+.envrc.local

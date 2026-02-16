@@ -1,0 +1,4 @@
+# Backend debugging with delve
+# Set to "true" to enable delve debugger on port 2345
+# Also enables mage-watcher for auto-rebuild on Go file changes
+export DEVELOPMENT=true
