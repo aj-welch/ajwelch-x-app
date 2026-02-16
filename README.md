@@ -2,6 +2,13 @@
 
 Grafana app plugin built with [@grafana/scenes](https://grafana.com/developers/scenes).
 
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Local Development](#local-development)
+- [Frontend](#frontend)
+- [Backend](#backend)
+
 ## Prerequisites
 
 - [Nix][1]
@@ -21,9 +28,7 @@ Grafana app plugin built with [@grafana/scenes](https://grafana.com/developers/s
 [3]: https://docs.docker.com/engine/install/
 [4]: https://docs.docker.com/engine/security/rootless/
 
-## Development
-
-### Local Development
+## Local Development
 
 ```bash
 mprocs
@@ -39,7 +44,7 @@ With `DEVELOPMENT=true`, the server container automatically:
 - Reloads frontend changes via livereload
 - Attaches delve debugger on port 2345
 
-### Frontend
+## Frontend
 
 ```bash
 # Lint
@@ -57,7 +62,7 @@ pnpm run test:ci   # CI mode
 pnpm run e2e
 ```
 
-### Backend
+## Backend
 
 ```bash
 # Build for current platform
