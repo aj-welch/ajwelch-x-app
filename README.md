@@ -74,3 +74,13 @@ mage build:windows # Windows
 # Build all platforms
 mage
 ```
+
+### Debugging
+
+With `DEVELOPMENT=true`, delve runs in the container on port 2345:
+
+```bash
+dlv connect localhost:2345
+```
+
+The container's build-watcher automatically restarts delve when backend files change.
