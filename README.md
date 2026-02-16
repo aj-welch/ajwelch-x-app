@@ -1,11 +1,9 @@
 <!-- markdownlint-disable MD041 -->
 <div align="center">
   <img src="src/img/logo.svg" alt="X Logo" width="150" height="150">
-  <h1>Grafana frontend for twitterapi.io</h1>
+  <h1>Grafana frontend for <a href="https://twitterapi.io">twitterapi.io</a></h1>
 </div>
 <!-- markdownlint-enable MD041 -->
-
-## Table of Contents
 
 - [Prerequisites](#prerequisites)
 - [Local Development](#local-development)
