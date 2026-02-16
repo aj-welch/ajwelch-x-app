@@ -1,6 +1,10 @@
-# X App
-
-Grafana app plugin built with [@grafana/scenes](https://grafana.com/developers/scenes).
+<!-- markdownlint-disable MD041 -->
+<div align="center">
+  <img src="src/img/logo.svg" alt="X Logo" width="200" height="200">
+  <h1>X App</h1>
+  <p>Grafana frontend for <a href="https://twitterapi.io">twitterapi.io</a></p>
+</div>
+<!-- markdownlint-enable MD041 -->
 
 ## Table of Contents
 
