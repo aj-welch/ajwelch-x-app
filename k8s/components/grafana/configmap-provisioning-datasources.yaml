@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-provisioning-datasources
+  namespace: ajwelch-x-app
+data:
+  default.yaml: |
+    apiVersion: 1
+
+    datasources:
+      - name: gdev-testdata
+        isDefault: false
+        type: testdata
