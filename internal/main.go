@@ -5,7 +5,7 @@ import (
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend/app"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
-	"github.com/aj-welch/x/pkg/plugin"
+	"github.com/aj-welch/x/internal/plugin"
 )
 
 func main() {
