@@ -1,4 +1,4 @@
-module github.com/aj-welch/x
+module github.com/aj-welch/ajwelch-x-app
 
 go 1.25.6
 
