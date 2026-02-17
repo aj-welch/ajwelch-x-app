@@ -41,6 +41,15 @@ custom_build(
     ],
 )
 
+# Install Gateway API CRDs before applying the main overlay. The EnvoyProxy
+# custom resource in envoy-gateway requires its CRD to be established first.
+local_resource(
+    'gateway-crds',
+    cmd='kustomize build --enable-helm k8s/overlays/crds | kubectl apply --server-side -f - && kubectl wait --for=condition=established --timeout=60s crd --all',
+    labels=['infrastructure'],
+    deps=['k8s/components/crds/'],
+)
+
 # Apply k8s manifests via Kustomize (with Helm chart inflation)
 k8s_yaml(kustomize('k8s/overlays/development', flags=['--enable-helm']))
 
@@ -51,6 +60,7 @@ if not is_ci:
 
 k8s_resource(
     'grafana',
+    resource_deps=['gateway-crds'],
     port_forwards=port_forwards,
     labels=['app'],
 )

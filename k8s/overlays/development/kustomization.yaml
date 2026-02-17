@@ -5,6 +5,5 @@ resources:
   - namespace.yaml
 
 components:
-  - ../../components/crds
   - ../../components/envoy-gateway
   - ../../components/grafana
