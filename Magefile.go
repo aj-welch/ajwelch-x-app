@@ -10,3 +10,11 @@ import (
 
 // Default configures the default target.
 var Default = build.BuildAll
+
+func init() {
+	// The SDK defaults to ./pkg; override to use standard Go cmd/ layout.
+	_ = build.SetBeforeBuildCallback(func(cfg build.Config) (build.Config, error) {
+		cfg.RootPackagePath = "./cmd/plugin"
+		return cfg, nil
+	})
+}
