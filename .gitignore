@@ -45,6 +45,9 @@ ci/
 
 .eslintcache
 
+# Claude Code
+.claude/
+
 # Nix
 .direnv/
 result
