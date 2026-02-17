@@ -25,8 +25,13 @@ func (Test) E2E() error {
 	return sh.RunV("pnpm", "exec", "playwright", "test")
 }
 
+// Backend runs Go unit tests.
+func (Test) Backend() error {
+	return sh.RunV("go", "test", "./...")
+}
+
 // All runs all test suites.
 func (Test) All() error {
-	mg.Deps((Test).CI, (Test).E2E)
+	mg.Deps((Test).CI, (Test).Backend, (Test).E2E)
 	return nil
 }

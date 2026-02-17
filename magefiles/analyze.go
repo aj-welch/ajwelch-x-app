@@ -28,8 +28,13 @@ func (Analyze) Typecheck() error {
 	return sh.RunV("pnpm", "exec", "tsc", "--noEmit")
 }
 
+// LintBackend runs golangci-lint on the Go codebase.
+func (Analyze) LintBackend() error {
+	return sh.RunV("golangci-lint", "run", "./...")
+}
+
 // All runs all analysis checks.
 func (Analyze) All() error {
-	mg.Deps((Analyze).Lint, (Analyze).Typecheck)
+	mg.Deps((Analyze).Lint, (Analyze).LintBackend, (Analyze).Typecheck)
 	return nil
 }

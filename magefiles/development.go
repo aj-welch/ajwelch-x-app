@@ -10,9 +10,29 @@ import (
 // Development groups targets for managing the local k3d development cluster.
 type Development mg.Namespace
 
-// ClusterCreate creates the k3d cluster using k3d.yaml.
+// ClusterCreate creates the k3d cluster using k3d.yaml, then patches the
+// local-registry-hosting ConfigMap so Tilt uses localhost:5000 in k8s
+// manifests. Without this, Tilt reads k3d's auto-generated ConfigMap which
+// sets hostFromContainerRuntime to the Docker-network registry hostname,
+// causing Tilt to mangle image names (e.g. localhost_5000_ajwelch-x-app).
+// With localhost:5000 set here, Tilt skips rewriting because the image ref
+// already starts with that registry. The k3d containerd mirror config then
+// handles the actual redirect inside the cluster nodes.
 func (Development) ClusterCreate() error {
-	return sh.RunV("k3d", "cluster", "create", "--config", "k3d.yaml")
+	if err := sh.RunV("k3d", "cluster", "create", "--config", "k3d.yaml"); err != nil {
+		return err
+	}
+	return sh.RunV("sh", "-c", `kubectl apply -f - <<'EOF'
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: local-registry-hosting
+  namespace: kube-public
+data:
+  localRegistryHosting.v1: |
+    host: "localhost:5000"
+    hostFromContainerRuntime: "localhost:5000"
+EOF`)
 }
 
 // ClusterDelete deletes the k3d cluster.

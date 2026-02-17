@@ -5,7 +5,7 @@ metadata:
   name: ajwelch-x-app
 servers: 1
 agents: 0
-image: rancher/k3s:v1.32.2-k3s1
+image: rancher/k3s:v1.28.4-k3s2
 ports:
   - port: 8080:80
     nodeFilters:
@@ -27,6 +27,9 @@ options:
   k3s:
     extraArgs:
       - arg: --disable=traefik
+        nodeFilters:
+          - server:*
+      - arg: --kubelet-arg=feature-gates=KubeletInUserNamespace=true
         nodeFilters:
           - server:*
   kubeconfig:

@@ -37,11 +37,6 @@ func (Build) Sign() error {
 	return sh.RunV("pnpm", "exec", "--yes", "@grafana/sign-plugin@latest")
 }
 
-// Watch rebuilds the backend binary on source file changes.
-func (Build) Watch() error {
-	return build.Watch()
-}
-
 // Container builds the Nix container image and loads it into Docker.
 // With no GRAFANA_VERSION set, builds the dev image (nix .#grafana-dev).
 // With GRAFANA_VERSION=X.Y.Z set, builds a versioned CI image

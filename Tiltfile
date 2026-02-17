@@ -5,12 +5,12 @@ grafana_version = os.environ.get("GRAFANA_VERSION", "")
 image_tag = grafana_version if grafana_version else "dev"
 grafana_version_env = ("GRAFANA_VERSION=" + grafana_version + " ") if grafana_version else ""
 
-# Dev-only: rebuild backend and frontend on source changes, run localias.
+# Dev-only: rebuild backend and frontend on source changes.
 # Skipped in CI since mage build:all runs before tilt ci.
 if not is_ci:
     local_resource(
         'backend',
-        serve_cmd='mage build:watch',
+        cmd='mage build:backend',
         deps=['internal/', 'cmd/', 'go.mod', 'go.sum'],
         labels=['build'],
     )
@@ -22,12 +22,6 @@ if not is_ci:
         labels=['build'],
     )
 
-    local_resource(
-        'localias',
-        serve_cmd='localias run',
-        deps=['.localias.yaml'],
-        labels=['infrastructure'],
-    )
 
 # Container image: built by Nix via mage build:container.
 # In dev mode: builds .#grafana-dev, live_update syncs dist/ without a rebuild.
