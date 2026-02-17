@@ -7,8 +7,8 @@
 
 - [Prerequisites](#prerequisites)
 - [Local Development](#local-development)
-- [Frontend](#frontend)
-- [Backend](#backend)
+- [Testing](#testing)
+- [Debugging](#debugging)
 
 ## Prerequisites
 
@@ -31,56 +31,61 @@
 
 ## Local Development
 
-```bash
-mprocs
-```
-
-This starts:
-- pnpm install (dependencies)
-- pnpm run dev (frontend watch mode)
-- pnpm run server (Grafana on http://localhost:3000)
-
-With `DEVELOPMENT=true`, the server container automatically:
-- Rebuilds backend on Go file changes (`mage watch`)
-- Reloads frontend changes via livereload
-- Attaches delve debugger on port 2345
-
-## Frontend
+### Setup
 
 ```bash
-# Lint
-pnpm run lint
-pnpm run lint:fix
-
-# Type check
-pnpm run typecheck
-
-# Unit tests
-pnpm run test      # Watch mode
-pnpm run test:ci   # CI mode
-
-# E2E tests (requires server running)
-pnpm run e2e
+mage development:up
 ```
 
-## Backend
+This creates a k3d cluster (if it doesn't exist) and starts [Tilt](https://tilt.dev), which:
+
+- Watches `src/` and rebuilds the frontend on changes
+- Watches `internal/` and `cmd/` and rebuilds the backend on changes
+- Builds a Grafana + plugin container image via Nix
+- Deploys everything to the local k3d cluster via Kustomize
+
+Tilt opens its UI at **http://localhost:10350** and Grafana is available at **http://localhost:3000** (admin / admin).
+
+### Tear down
 
 ```bash
-# Build for current platform
-mage build:linux   # Linux
-mage build:darwin  # macOS
-mage build:windows # Windows
-
-# Build all platforms
-mage
+mage development:down          # stop Tilt, keep the cluster
+mage development:clusterDelete # destroy the cluster entirely
 ```
 
-### Debugging
+### Local domains (optional)
 
-With `DEVELOPMENT=true`, delve runs in the container on port 2345:
+`.localias.yaml` maps subdomains to local ports using [localias](https://github.com/peterldowns/localias), which is already available in the Nix dev shell. This is useful for running multiple services on different subdomains locally with HTTPS.
+
+localias requires root to edit `/etc/hosts` and bind to ports 80/443. Start it once per machine boot:
+
+```bash
+sudo localias start
+```
+
+After that, **https://grafana.ajwelch-x-app.test** resolves to the k3d load balancer. To add a service, edit `.localias.yaml` and run `localias reload`. To stop:
+
+```bash
+localias stop
+```
+
+## Testing
+
+```bash
+mage analyze:typecheck      # TypeScript type check
+mage analyze:lint           # ESLint
+mage analyze:lintBackend    # Go lint (golangci-lint)
+mage test:ci                # Jest unit tests
+mage test:backend           # Go unit tests
+mage test:e2e               # Playwright E2E (requires stack running)
+```
+
+## Debugging
+
+Delve attaches to the plugin process on port 2345 in dev mode:
 
 ```bash
 dlv connect localhost:2345
 ```
 
-The container's build-watcher automatically restarts delve when backend files change.
+The backend rebuilds automatically when Go files change, and delve reattaches.
