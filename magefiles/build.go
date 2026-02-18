@@ -55,7 +55,8 @@ func (Build) All() error {
 // Called by grafana/plugin-actions/package-plugin (github.com/grafana/plugin-actions)
 // via `mage buildAll` when Magefile.go is detected.
 func BuildAll() error {
-	return mg.Deps((Build).Backend)
+	mg.Deps((Build).Backend)
+	return nil
 }
 
 // Coverage runs backend tests with coverage reporting.
