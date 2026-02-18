@@ -5,6 +5,7 @@
 - [Build](#build)
 - [Test](#test)
 - [Debug](#debug)
+- [Local Domains](#local-domains)
 
 ## Prerequisites
 
@@ -45,23 +46,6 @@ Tilt opens its UI at **http://localhost:10350** and Grafana is available at **ht
 ```bash
 mage development:down          # stop Tilt, keep the cluster
 mage development:clusterDelete # destroy the cluster entirely
-```
-
-### Local domains (optional)
-
-[localias](https://github.com/peterldowns/localias) maps subdomains to local ports and is already available in the Nix dev shell. This is useful for running multiple services on different subdomains locally with HTTPS.
-
-localias requires root to edit `/etc/hosts` and bind to ports 80/443. Run once to configure the domain mapping:
-
-```bash
-localias upsert grafana.ajwelch-x-app.test 8080
-sudo localias start
-```
-
-`sudo localias start` must be re-run after each reboot; use systemd or your init system of choice to persist it. After that, **https://grafana.ajwelch-x-app.test** resolves to the k3d load balancer. To stop:
-
-```bash
-sudo localias stop
 ```
 
 ## Build
@@ -106,3 +90,20 @@ dlv connect localhost:2345
 ```
 
 The backend rebuilds automatically when Go files change, and delve reattaches.
+
+## Local Domains
+
+[localias](https://github.com/peterldowns/localias) maps subdomains to local ports and is already available in the Nix dev shell. This is useful for running multiple services on different subdomains locally with HTTPS.
+
+localias requires root to edit `/etc/hosts` and bind to ports 80/443. Run once to configure the domain mapping:
+
+```bash
+localias upsert grafana.ajwelch-x-app.test 8080
+sudo localias start
+```
+
+`sudo localias start` must be re-run after each reboot; use systemd or your init system of choice to persist it. After that, **https://grafana.ajwelch-x-app.test** resolves to the k3d load balancer. To stop:
+
+```bash
+sudo localias stop
+```
