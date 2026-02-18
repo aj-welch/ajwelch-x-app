@@ -3,10 +3,15 @@
 { pkgs }:
 let
   pluginId = "ajwelch-x-app";
+  pluginDist = ../../dist;
+
+  pluginFiles = pkgs.runCommand "plugin-dist" { } ''
+    mkdir -p $out/var/lib/grafana/plugins/${pluginId}
+    cp -r ${pluginDist}/. $out/var/lib/grafana/plugins/${pluginId}/
+  '';
 
   entrypoint = pkgs.writeShellScript "grafana-entrypoint" ''
     set -e
-    mkdir -p /var/lib/grafana/plugins
     exec ${pkgs.grafana}/bin/grafana server \
       --homepath=${pkgs.grafana}/share/grafana "$@"
   '';
@@ -22,6 +27,7 @@ pkgs.dockerTools.buildLayeredImage {
     bash
     cacert
     delve
+    pluginFiles
   ];
 
   config = {
