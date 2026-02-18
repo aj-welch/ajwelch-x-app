@@ -1,0 +1,185 @@
+---
+min_version: "1.10.0"
+
+commit-msg:
+  commands:
+    commitizen:
+      run: cz check --commit-msg-file {1}
+
+pre-push:
+  parallel: true
+  env:
+    TERM: dumb
+  commands:
+    check-added-large-files:
+      run: |
+        max_kb=1200
+        for f in {push_files}; do
+          if [ -f "$f" ]; then
+            size=$(stat -c%s "$f" 2>/dev/null || stat -f%z "$f" 2>/dev/null)
+            if [ "$size" -gt $((max_kb * 1024)) ]; then
+              echo "File $f is too large ($(($size / 1024))KB > ${max_kb}KB)"
+              exit 1
+            fi
+          fi
+        done
+
+    check-case-conflict:
+      run: |
+        git ls-files | sort -f | uniq -di | while read -r file; do
+          echo "Case conflict: $file"
+          exit 1
+        done
+
+    check-merge-conflict:
+      run: |
+        if git grep -l -E '^(<{7}|={7}|>{7})' -- ':(exclude)lefthook.yml' {push_files} 2>/dev/null; then
+          echo "Merge conflict markers found"
+          exit 1
+        fi
+
+    check-symlinks:
+      run: |
+        git ls-files -s | grep '^120000' | cut -f2 | while read -r link; do
+          if [ -L "$link" ] && [ ! -e "$link" ]; then
+            echo "Broken symlink: $link"
+            exit 1
+          fi
+        done
+
+    check-vcs-permalinks:
+      run: |
+        if grep -rE 'github\.com/[^/]+/[^/]+/(blob|tree)/[^/]+/' {push_files} 2>/dev/null | \
+          grep -vE '/(blob|tree)/[a-f0-9]{40}/' | grep -v '^Binary'; then
+          echo "Found non-permanent VCS links (use commit SHA instead of branch)"
+          exit 1
+        fi
+
+    deadnix:
+      glob: "*.nix"
+      run: deadnix --fail {push_files}
+
+    destroyed-symlinks:
+      run: |
+        for f in {push_files}; do
+          if [ -f "$f" ] && [ ! -L "$f" ]; then
+            if grep -qI . "$f" 2>/dev/null; then
+              content=$(head -c 1000 "$f" 2>/dev/null | tr -d '\n')
+              if [[ "$content" =~ ^[a-zA-Z0-9_./-]+$ ]] && [ -e "$content" ]; then
+                echo "Possible destroyed symlink: $f -> $content"
+                exit 1
+              fi
+            fi
+          fi
+        done
+
+    detect-aws-credentials:
+      run: |
+        if grep -rE '(AKIA|ABIA|ACCA|ASIA)[A-Z0-9]{16}' {push_files} 2>/dev/null; then
+          echo "AWS access key detected"
+          exit 1
+        fi
+
+    detect-private-key:
+      run:
+        "! grep -lE 'BEGIN (RSA|DSA|EC|OPENSSH|ENCRYPTED) PRIVATE KEY'
+        {push_files} 2>/dev/null"
+
+    editorconfig-checker:
+      exclude: ["internal/twitterapiio/sdk/sdk.go", "magefiles/development.go"]
+      run: editorconfig-checker {push_files}
+
+    go-generate:
+      glob: "*.{go,sql}"
+      run: go generate ./...
+
+    go-mod-tidy:
+      run: |
+        cp go.sum go.sum.bak
+        go mod tidy
+        if ! diff -q go.sum go.sum.bak >/dev/null 2>&1; then
+          rm go.sum.bak
+          echo "go.sum was modified by go mod tidy"
+          exit 1
+        fi
+        rm go.sum.bak
+
+    golangci-lint:
+      glob: "*.go"
+      run: golangci-lint run --build-tags mage
+
+    keep-sorted:
+      run: keep-sorted --mode lint {push_files}
+
+    kubeconform:
+      glob: "k8s/**/*.yaml"
+      run: |
+        for f in {push_files}; do
+          kubeconform -strict -ignore-missing-schemas "$f" || exit 1
+        done
+
+    markdownlint:
+      glob: "*.md"
+      exclude: [".config/**"]
+      run: markdownlint-cli2 --config .markdownlint.yaml {push_files}
+
+    nixfmt:
+      glob: "*.nix"
+      run: nixfmt --check {push_files}
+
+    semgrep:
+      glob: "*.{go,ts,tsx}"
+      run: semgrep --config=auto --config=semgrep.yml --error --quiet {push_files}
+
+    shellcheck:
+      glob: "*.sh"
+      run: shellcheck {push_files}
+
+    shfmt:
+      glob: "*.sh"
+      run: shfmt -d {push_files}
+
+    statix:
+      glob: "*.nix"
+      run: |
+        for f in {push_files}; do
+          statix check "$f" || exit 1
+        done
+
+    taplo:
+      glob: "*.toml"
+      run: taplo check {push_files}
+
+    yamllint:
+      glob: "*.{yaml,yml}"
+      run: yamllint -s {push_files}
+
+fix:
+  parallel: true
+  commands:
+    go-mod-tidy-fix:
+      run: go mod tidy
+
+    golangci-lint-fix:
+      glob: "*.go"
+      run: golangci-lint run --fix --build-tags mage
+
+    keep-sorted-fix:
+      run: keep-sorted {all_files}
+
+    markdownlint-fix:
+      glob: "*.md"
+      exclude: [".config/**"]
+      run: markdownlint-cli2 --config .markdownlint.yaml --fix {all_files}
+
+    nixfmt-fix:
+      glob: "*.nix"
+      run: nixfmt {all_files}
+
+    shfmt-fix:
+      glob: "*.sh"
+      run: shfmt -w {all_files}
+
+    taplo-fix:
+      glob: "*.toml"
+      run: taplo format {all_files}

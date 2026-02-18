@@ -32,7 +32,7 @@ func (Tests) Backend() error {
 }
 
 // All runs all test suites.
-func (Tests) All() error {
+func (Tests) All() error { //nolint:unparam
 	mg.Deps((Tests).CI, (Tests).Backend, (Tests).E2E)
 	return nil
 }

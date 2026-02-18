@@ -16,7 +16,7 @@ func (Clean) Dist() error {
 }
 
 // All removes all build artifacts.
-func (Clean) All() error {
+func (Clean) All() error { //nolint:unparam
 	mg.Deps((Clean).Dist)
 	return nil
 }

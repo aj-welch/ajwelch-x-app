@@ -57,7 +57,7 @@ func (Build) Container() error {
 }
 
 // All builds both the backend and frontend.
-func (Build) All() error {
+func (Build) All() error { //nolint:unparam
 	mg.Deps((Build).Backend, (Build).Frontend)
 	return nil
 }
@@ -65,7 +65,7 @@ func (Build) All() error {
 // BuildAll builds the plugin backend for all target platforms.
 // Called by grafana/plugin-actions/package-plugin (github.com/grafana/plugin-actions)
 // via `mage buildAll` when Magefile.go is detected.
-func BuildAll() error {
+func BuildAll() error { //nolint:unparam
 	mg.Deps((Build).Backend)
 	return nil
 }

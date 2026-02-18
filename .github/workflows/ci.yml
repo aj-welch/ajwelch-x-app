@@ -1,3 +1,4 @@
+---
 name: CI
 
 on:
@@ -64,21 +65,21 @@ jobs:
 
       - name: Lint backend
         if: steps.check-for-backend.outputs.has-backend == 'true'
-        uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v9.2.0
+        uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20  # v9.2.0
         with:
           version: latest
           args: ./...
 
       - name: Build backend
         if: steps.check-for-backend.outputs.has-backend == 'true'
-        uses: magefile/mage-action@6f50bbb8ea47d56e62dee92392788acbc8192d0b # v3.1.0
+        uses: magefile/mage-action@6f50bbb8ea47d56e62dee92392788acbc8192d0b  # v3.1.0
         with:
           version: latest
           args: buildAll
 
       - name: Test backend
         if: steps.check-for-backend.outputs.has-backend == 'true'
-        uses: magefile/mage-action@6f50bbb8ea47d56e62dee92392788acbc8192d0b # v3.1.0
+        uses: magefile/mage-action@6f50bbb8ea47d56e62dee92392788acbc8192d0b  # v3.1.0
         with:
           version: latest
           args: test
@@ -196,7 +197,10 @@ jobs:
       - name: Start Grafana
         run: |
           docker compose pull
-          ANONYMOUS_AUTH_ENABLED=false DEVELOPMENT=false GRAFANA_VERSION=${{ matrix.GRAFANA_IMAGE.VERSION }} GRAFANA_IMAGE=${{ matrix.GRAFANA_IMAGE.NAME }} docker compose up -d
+          ANONYMOUS_AUTH_ENABLED=false DEVELOPMENT=false \
+            GRAFANA_VERSION=${{ matrix.GRAFANA_IMAGE.VERSION }} \
+            GRAFANA_IMAGE=${{ matrix.GRAFANA_IMAGE.NAME }} \
+            docker compose up -d
 
       - name: Wait for grafana server
         uses: grafana/plugin-actions/wait-for-grafana@wait-for-grafana/v1.0.2
@@ -226,7 +230,8 @@ jobs:
       - name: Stop grafana docker
         run: docker compose down
 
-      # Uncomment this step to upload the server log to Github artifacts. Remember Github artifacts are public on the Internet if the repository is public.
+      # yamllint disable rule:comments-indentation
+      # Uncomment this step to upload the server log to Github artifacts.
       # - name: Upload server log
       #   uses: actions/upload-artifact@v4
       #   if: ${{ always() && steps.run-tests.outcome == 'failure' }}
@@ -234,6 +239,7 @@ jobs:
       #     name: ${{ matrix.GRAFANA_IMAGE.NAME }}-v${{ matrix.GRAFANA_IMAGE.VERSION }}-${{github.run_id}}-server-log
       #     path: grafana-server.log
       #     retention-days: 5
+      # yamllint enable rule:comments-indentation
 
   publish-report:
     if: ${{ always() && !cancelled() }}

@@ -1,0 +1,26 @@
+---
+extends: default
+
+rules:
+  document-start:
+    present: true
+  indentation:
+    spaces: 2
+  line-length:
+    level: warning
+    max: 120
+  truthy:
+    allowed-values: ['true', 'false', 'on', 'off']
+
+ignore: |
+  pnpm-lock.yaml
+  pnpm-workspace.yaml
+  **/node_modules/**
+  **/vendor/**
+  **/.git/**
+  **/build/**
+  **/dist/**
+  **/.config/**
+  k8s/**/charts/**
+  *.min.yaml
+  *.min.yml

@@ -1,3 +1,4 @@
-## Project knowledge
+# Project knowledge
 
-Thie repository contains a **Grafana plugin**. You must Read @./.config/AGENTS/instructions.md before doing changes.
+Thie repository contains a **Grafana plugin**. You must Read
+@./.config/AGENTS/instructions.md before doing changes.

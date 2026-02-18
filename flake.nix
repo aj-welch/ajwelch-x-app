@@ -26,22 +26,43 @@
 
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
+            commitizen
+            customPkgs.lefthook
             customPkgs.twitterapi-io
+            deadnix
             delve
             docker-client
+            editorconfig-checker
             go_1_25
+            gofumpt
             golangci-lint
             k3d
+            keep-sorted
+            kubeconform
             kubectl
             kubernetes-helm
             kustomize
             localias.packages.${system}.default
             mage
+            markdownlint-cli2
+            nixfmt-rfc-style
             nodejs_22
             nodePackages.pnpm
             oapi-codegen
+            semgrep
+            shellcheck
+            shfmt
+            statix
+            taplo
             tilt
+            yamllint
           ];
+
+          shellHook = ''
+            if [ -d .git ]; then
+              lefthook install
+            fi
+          '';
         };
       }
     );

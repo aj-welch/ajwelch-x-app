@@ -10,6 +10,16 @@ import (
 // Analyze groups static analysis targets.
 type Analyze mg.Namespace
 
+// Check runs all lefthook pre-push checks on all files.
+func (Analyze) Check() error {
+	return sh.RunV("lefthook", "run", "pre-push", "--all-files")
+}
+
+// Fix runs all auto-formatting fixes on all files.
+func (Analyze) Fix() error {
+	return sh.RunV("lefthook", "run", "fix", "--all-files")
+}
+
 // Lint runs ESLint.
 func (Analyze) Lint() error {
 	return sh.RunV("pnpm", "exec", "eslint", "--cache", ".")
@@ -30,11 +40,11 @@ func (Analyze) Typecheck() error {
 
 // LintBackend runs golangci-lint on the Go codebase.
 func (Analyze) LintBackend() error {
-	return sh.RunV("golangci-lint", "run", "./...")
+	return sh.RunV("golangci-lint", "run", "--build-tags", "mage", "./...")
 }
 
 // All runs all analysis checks.
-func (Analyze) All() error {
+func (Analyze) All() error { //nolint:unparam
 	mg.Deps((Analyze).Lint, (Analyze).LintBackend, (Analyze).Typecheck)
 	return nil
 }

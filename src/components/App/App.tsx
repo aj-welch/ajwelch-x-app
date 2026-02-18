@@ -28,8 +28,8 @@ function AppWithScenes() {
       {!config.datasources[DATASOURCE_REF.uid] && (
         <Alert title={`Missing ${DATASOURCE_REF.uid} datasource`}>
           These demos depend on <b>testdata</b> datasource: <code>{JSON.stringify(DATASOURCE_REF)}</code>. See{' '}
-          <a href="https://github.com/grafana/grafana/tree/main/devenv#set-up-your-development-environment">
-            https://github.com/grafana/grafana/tree/main/devenv#set-up-your-development-environment
+          <a href="https://github.com/grafana/grafana/tree/78f2c9d19087c17cb58bd49e277799bf72c1f526/devenv#set-up-your-development-environment">
+            https://github.com/grafana/grafana/tree/78f2c9d19087c17cb58bd49e277799bf72c1f526/devenv#set-up-your-development-environment
           </a>{' '}
           for more details.
         </Alert>

@@ -1,7 +1,5 @@
 { pkgs }:
 let
-  inherit (pkgs) lib;
-
   pluginId = "ajwelch-x-app";
   version = "0.3.0";
   src = ../..;

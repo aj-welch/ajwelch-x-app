@@ -4,7 +4,7 @@ This directory uses Kustomize with a component-based architecture.
 
 ## Structure
 
-```
+```text
 k8s/
 ├── crds/                # CRDs — installed separately before main resources
 ├── components/          # Reusable component library
@@ -18,40 +18,46 @@ k8s/
 
 ## Design
 
-Components are isolated, reusable units that declare their inputs via an internal `vars.yaml`
-ConfigMap. Environments provide values through a `global-vars` ConfigMap that components
-read via Kustomize replacements.
+Components are isolated, reusable units that declare their inputs via an
+internal `vars.yaml` ConfigMap. Environments provide values through a
+`global-vars` ConfigMap that components read via Kustomize replacements.
 
 This is dependency injection for Kubernetes:
-- **Components** declare what inputs they need (`vars.yaml` with `PLACEHOLDER` values)
-- **Environments** provide the actual values (`global-vars` ConfigMap in `development/vars.yaml`)
+
+- **Components** declare what inputs they need (`vars.yaml` with `PLACEHOLDER`
+  values)
+- **Environments** provide the actual values (`global-vars` ConfigMap in
+  `development/vars.yaml`)
 
 ### Replacement flow
 
-```
+```text
 global-vars (development/vars.yaml)
     → component-vars (components/*/vars.yaml)
         → actual resource fields
 ```
 
-The two-step indirection documents the component's interface explicitly — you can read
-`components/grafana/vars.yaml` to see exactly what inputs grafana accepts.
+The two-step indirection documents the component's interface explicitly — you
+can read `components/grafana/vars.yaml` to see exactly what inputs grafana
+accepts.
 
 ### local-config annotation
 
 Both `global-vars` and component vars ConfigMaps carry:
+
 ```yaml
 annotations:
-  config.kubernetes.io/local-config: "true"
+  config.kubernetes.io/local-config: 'true'
 ```
-This tells Kustomize to exclude them from the final output, so they are never deployed
-to the cluster.
+
+This tells Kustomize to exclude them from the final output, so they are never
+deployed to the cluster.
 
 ### Adding a new environment
 
 Create a sibling directory to `development/`:
 
-```
+```text
 k8s/
 ├── development/
 └── staging/
@@ -71,4 +77,5 @@ kubectl wait --for=condition=established --timeout=60s crd --all
 kustomize build --enable-helm k8s/development | kubectl apply -f -
 ```
 
-In practice, `mage development:up` runs Tilt which handles both steps automatically.
+In practice, `mage development:up` runs Tilt which handles both steps
+automatically.

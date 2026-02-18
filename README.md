@@ -14,4 +14,5 @@
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, testing, and contribution guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, testing, and
+contribution guidelines.

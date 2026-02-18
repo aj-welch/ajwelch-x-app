@@ -1,5 +1,7 @@
 ---
+# yamllint disable rule:line-length
 # yaml-language-server: $schema=https://raw.githubusercontent.com/oapi-codegen/oapi-codegen/HEAD/configuration-schema.json
+# yamllint enable rule:line-length
 # oapi-codegen configuration for TwitterAPI.io client generation
 package: sdk
 output: sdk.go
