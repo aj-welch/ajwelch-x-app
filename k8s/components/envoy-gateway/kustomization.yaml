@@ -8,13 +8,14 @@ helmCharts:
     namespace: envoy-gateway-system
 
 resources:
+  - vars.yaml
   - namespace.yaml
   - gateway-class.yaml
   - gateway.yaml
   - envoy-proxy.yaml
   - http-route.yaml
 
-# CRDs are installed in the crds component; remove them from this chart output
+# CRDs are managed in k8s/crds/; remove them from this chart output
 patches:
   - target:
       kind: CustomResourceDefinition
@@ -24,3 +25,48 @@ patches:
       metadata:
         name: UNUSED
       $patch: delete
+
+replacements:
+  # global-vars → envoy-gateway-vars
+  - source:
+      kind: ConfigMap
+      name: global-vars
+      fieldPath: data.HOSTNAME
+    targets:
+      - select:
+          kind: ConfigMap
+          name: envoy-gateway-vars
+        fieldPaths:
+          - data.HOSTNAME
+  - source:
+      kind: ConfigMap
+      name: global-vars
+      fieldPath: data.NAMESPACE
+    targets:
+      - select:
+          kind: ConfigMap
+          name: envoy-gateway-vars
+        fieldPaths:
+          - data.NAMESPACE
+
+  # envoy-gateway-vars → actual resources
+  - source:
+      kind: ConfigMap
+      name: envoy-gateway-vars
+      fieldPath: data.HOSTNAME
+    targets:
+      - select:
+          kind: HTTPRoute
+          name: grafana-route
+        fieldPaths:
+          - spec.hostnames.0
+  - source:
+      kind: ConfigMap
+      name: envoy-gateway-vars
+      fieldPath: data.NAMESPACE
+    targets:
+      - select:
+          kind: HTTPRoute
+          name: grafana-route
+        fieldPaths:
+          - metadata.namespace

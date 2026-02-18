@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: grafana
-  namespace: ajwelch-x-app
+  namespace: PLACEHOLDER
 spec:
   replicas: 1
   selector:
@@ -15,13 +15,13 @@ spec:
     spec:
       containers:
         - name: grafana
-          image: localhost:5000/ajwelch-x-app:dev
+          image: PLACEHOLDER
           ports:
             - containerPort: 3000
             - containerPort: 2345
           env:
             - name: GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS
-              value: ajwelch-x-app
+              value: PLACEHOLDER
             - name: GF_AUTH_ANONYMOUS_ENABLED
               value: "true"
             - name: GF_AUTH_ANONYMOUS_ORG_ROLE

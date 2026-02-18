@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: grafana-provisioning-datasources
-  namespace: ajwelch-x-app
+  namespace: PLACEHOLDER
 data:
   default.yaml: |
     apiVersion: 1

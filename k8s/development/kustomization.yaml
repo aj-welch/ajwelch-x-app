@@ -3,7 +3,8 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
+  - vars.yaml
 
 components:
-  - ../../components/envoy-gateway
-  - ../../components/grafana
+  - ../components/envoy-gateway
+  - ../components/grafana

@@ -3,6 +3,9 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/grafana/grafana-plugin-sdk-go/build"
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
@@ -42,7 +45,15 @@ func (Build) Container() error {
 	if err := sh.RunV("sh", "-c", "docker load < result"); err != nil {
 		return err
 	}
-	return sh.RunV("docker", "tag", "ajwelch-x-app:dev", "localhost:5000/ajwelch-x-app:dev")
+	registry := os.Getenv("LOCAL_REGISTRY")
+	if registry == "" {
+		return fmt.Errorf("LOCAL_REGISTRY env var not set")
+	}
+	pluginID := os.Getenv("PLUGIN_ID")
+	if pluginID == "" {
+		return fmt.Errorf("PLUGIN_ID env var not set")
+	}
+	return sh.RunV("docker", "tag", pluginID+":dev", registry+"/"+pluginID+":dev")
 }
 
 // All builds both the backend and frontend.

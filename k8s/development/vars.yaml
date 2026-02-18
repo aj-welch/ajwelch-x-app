@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: global-vars
+  annotations:
+    config.kubernetes.io/local-config: "true"
+data:
+  NAMESPACE: ajwelch-x-app
+  PLUGIN_ID: ajwelch-x-app
+  IMAGE: localhost:5000/ajwelch-x-app:dev
+  HOSTNAME: grafana.ajwelch-x-app.test

@@ -13,14 +13,18 @@ local_resource(
     labels=['build'],
 )
 
+local_registry = os.environ['LOCAL_REGISTRY']
+plugin_id = os.environ['PLUGIN_ID']
+image_ref = '{}/{}'.format(local_registry, plugin_id)
+
 # Container image: built by Nix via mage build:container.
 # live_update syncs dist/ into the running pod without a full rebuild.
 custom_build(
-    'localhost:5000/ajwelch-x-app',
-    'mage build:container && docker tag ajwelch-x-app:dev $EXPECTED_REF && docker push $EXPECTED_REF',
+    image_ref,
+    'mage build:container && docker tag {}:dev $EXPECTED_REF && docker push $EXPECTED_REF'.format(plugin_id),
     deps=['nix/', 'dist/'],
     live_update=[
-        sync('dist/', '/var/lib/grafana/plugins/ajwelch-x-app/'),
+        sync('dist/', '/var/lib/grafana/plugins/{}/'.format(plugin_id)),
     ],
 )
 
@@ -28,13 +32,13 @@ custom_build(
 # custom resource in envoy-gateway requires its CRD to be established first.
 local_resource(
     'gateway-crds',
-    cmd='kustomize build --enable-helm k8s/overlays/crds | kubectl apply --server-side -f - && kubectl wait --for=condition=established --timeout=60s crd --all',
+    cmd='kustomize build --enable-helm k8s/crds | kubectl apply --server-side -f - && kubectl wait --for=condition=established --timeout=60s crd --all',
     labels=['infrastructure'],
-    deps=['k8s/components/crds/'],
+    deps=['k8s/crds/'],
 )
 
 # Apply k8s manifests via Kustomize (with Helm chart inflation)
-k8s_yaml(kustomize('k8s/overlays/development', flags=['--enable-helm']))
+k8s_yaml(kustomize('k8s/development', flags=['--enable-helm']))
 
 k8s_resource(
     'grafana',

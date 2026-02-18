@@ -2,7 +2,88 @@ apiVersion: kustomize.config.k8s.io/v1alpha1
 kind: Component
 
 resources:
+  - vars.yaml
   - deployment.yaml
   - service.yaml
   - configmap-provisioning-datasources.yaml
   - configmap-provisioning-plugins.yaml
+
+replacements:
+  # global-vars → grafana-vars
+  - source:
+      kind: ConfigMap
+      name: global-vars
+      fieldPath: data.IMAGE
+    targets:
+      - select:
+          kind: ConfigMap
+          name: grafana-vars
+        fieldPaths:
+          - data.IMAGE
+  - source:
+      kind: ConfigMap
+      name: global-vars
+      fieldPath: data.NAMESPACE
+    targets:
+      - select:
+          kind: ConfigMap
+          name: grafana-vars
+        fieldPaths:
+          - data.NAMESPACE
+  - source:
+      kind: ConfigMap
+      name: global-vars
+      fieldPath: data.PLUGIN_ID
+    targets:
+      - select:
+          kind: ConfigMap
+          name: grafana-vars
+        fieldPaths:
+          - data.PLUGIN_ID
+
+  # grafana-vars → actual resources
+  - source:
+      kind: ConfigMap
+      name: grafana-vars
+      fieldPath: data.IMAGE
+    targets:
+      - select:
+          kind: Deployment
+          name: grafana
+        fieldPaths:
+          - spec.template.spec.containers.[name=grafana].image
+  - source:
+      kind: ConfigMap
+      name: grafana-vars
+      fieldPath: data.NAMESPACE
+    targets:
+      - select:
+          kind: Deployment
+          name: grafana
+        fieldPaths:
+          - metadata.namespace
+      - select:
+          kind: Service
+          name: grafana
+        fieldPaths:
+          - metadata.namespace
+      - select:
+          kind: ConfigMap
+          name: grafana-provisioning-datasources
+        fieldPaths:
+          - metadata.namespace
+      - select:
+          kind: ConfigMap
+          name: grafana-provisioning-plugins
+        fieldPaths:
+          - metadata.namespace
+  - source:
+      kind: ConfigMap
+      name: grafana-vars
+      fieldPath: data.PLUGIN_ID
+    targets:
+      - select:
+          kind: Deployment
+          name: grafana
+        fieldPaths:
+          - spec.template.spec.containers.[name=grafana].env.[name=GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS].value
