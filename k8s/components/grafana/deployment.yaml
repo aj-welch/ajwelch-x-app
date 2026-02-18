@@ -22,6 +22,14 @@ spec:
           env:
             - name: GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS
               value: ajwelch-x-app
+            - name: GF_AUTH_ANONYMOUS_ENABLED
+              value: "true"
+            - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+              value: Admin
+            - name: GF_AUTH_BASIC_ENABLED
+              value: "false"
+            - name: GF_DEFAULT_APP_MODE
+              value: development
           securityContext:
             capabilities:
               add:
