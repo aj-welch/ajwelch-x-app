@@ -63,3 +63,17 @@ func (Build) All() error {
 	mg.Deps((Build).Backend, (Build).Frontend)
 	return nil
 }
+
+// BuildAll builds the plugin backend for all target platforms.
+// Called by grafana/plugin-actions/package-plugin (github.com/grafana/plugin-actions)
+// via `mage buildAll` when Magefile.go is detected.
+func BuildAll() error {
+	return mg.Deps((Build).Backend)
+}
+
+// Coverage runs backend tests with coverage reporting.
+// Called by grafana/plugin-actions/package-plugin (github.com/grafana/plugin-actions)
+// via `mage coverage` when Magefile.go is detected.
+func Coverage() error {
+	return sh.RunV("go", "test", "-coverprofile=coverage.out", "./...")
+}

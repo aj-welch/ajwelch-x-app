@@ -1,7 +1,18 @@
 {
   "name": "ajwelch-x-app",
   "version": "0.3.0",
-  "scripts": {},
+  "scripts": {
+    "build": "webpack -c ./webpack.config.ts --env production",
+    "dev": "webpack -w -c ./webpack.config.ts --env development",
+    "test": "jest --watch --onlyChanged",
+    "test:ci": "jest --passWithNoTests --maxWorkers 4",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint --cache .",
+    "lint:fix": "pnpm run lint --fix && prettier --write --list-different .",
+    "e2e": "playwright test",
+    "server": "docker compose up --build",
+    "sign": "npx --yes @grafana/sign-plugin@latest"
+  },
   "author": "AJ Welch",
   "license": "MIT",
   "devDependencies": {
