@@ -3,9 +3,6 @@
 package main
 
 import (
-	"os"
-	"strings"
-
 	"github.com/grafana/grafana-plugin-sdk-go/build"
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
@@ -37,25 +34,15 @@ func (Build) Sign() error {
 	return sh.RunV("pnpm", "exec", "--yes", "@grafana/sign-plugin@latest")
 }
 
-// Container builds the Nix container image and loads it into Docker.
-// With no GRAFANA_VERSION set, builds the dev image (nix .#grafana-dev).
-// With GRAFANA_VERSION=X.Y.Z set, builds a versioned CI image
-// (nix .#grafana-X_Y_Z) that has the plugin dist/ baked in.
+// Container builds the Nix dev container image and loads it into Docker.
 func (Build) Container() error {
-	version := os.Getenv("GRAFANA_VERSION")
-	nixAttr := ".#grafana-dev"
-	imageTag := "dev"
-	if version != "" {
-		nixAttr = ".#grafana-" + strings.ReplaceAll(version, ".", "_")
-		imageTag = version
-	}
-	if err := sh.RunV("nix", "build", nixAttr); err != nil {
+	if err := sh.RunV("nix", "build", ".#grafana-dev"); err != nil {
 		return err
 	}
 	if err := sh.RunV("sh", "-c", "docker load < result"); err != nil {
 		return err
 	}
-	return sh.RunV("docker", "tag", "ajwelch-x-app:"+imageTag, "localhost:5000/ajwelch-x-app:dev")
+	return sh.RunV("docker", "tag", "ajwelch-x-app:dev", "localhost:5000/ajwelch-x-app:dev")
 }
 
 // All builds both the backend and frontend.

@@ -38,7 +38,7 @@ This creates a k3d cluster (if it doesn't exist) and starts [Tilt](https://tilt.
 - Builds a Grafana + plugin container image via Nix
 - Deploys everything to the local k3d cluster via Kustomize
 
-Tilt opens its UI at **http://localhost:10350** and Grafana is available at **http://localhost:3000** (admin / admin).
+Tilt opens its UI at **http://localhost:10350** and Grafana is available at **http://localhost:3000** (username: admin, password: admin).
 
 ### Tear down
 
@@ -66,22 +66,25 @@ sudo localias stop
 
 ## Build
 
-This project maintains two parallel build systems:
+Grafana's plugin ecosystem expects certain files and commands (scaffolded by [create-plugin](https://github.com/grafana/create-plugin)). We keep these files working so GitHub Actions workflows from [plugin-actions](https://github.com/grafana/plugin-actions) (`release.yml`, `is-compatible.yml`, `bundle-stats.yml`) can verify the plugin remains compatible. This is our "conformance" layer. Local development uses a separate Nix + k3d environment.
 
-| System | Entry Points | Used By |
-|--------|--------------|---------|
-| **Nix + k3d** | `mage build:frontend`, `mage development:up` | Local development |
-| **Standard Grafana Plugin Tooling** | `pnpm run build`, `mage buildAll` | Conformance workflows |
+### Nix + k3d (Local Development)
 
-### Nix + k3d Development Environment
+```bash
+mage build:backend      # Build Go backend
+mage build:frontend     # Build TypeScript frontend
+mage build:container    # Build Grafana+plugin container via Nix
+mage build:all          # Build backend + frontend
+```
 
-Custom `magefiles/` targets with Nix-based reproducible builds and Kubernetes-native local development. This is the **primary development workflow**.
+### Standard Grafana Plugin Tooling (Conformance)
 
-### Standard Grafana Plugin Tooling
-
-npm scripts + root `Magefile.go` (detection sentinel) with top-level `buildAll` and `coverage` mage targets. Used by GitHub Actions conformance workflows (`release.yml`, `is-compatible.yml`, `bundle-stats.yml`) from [grafana/plugin-actions](https://github.com/grafana/plugin-actions) to ensure the plugin remains compatible with Grafana plugin ecosystem expectations.
-
-**What is conformance?** The Grafana plugin ecosystem provides scaffolding, GitHub Actions, and tooling (`create-plugin`, `plugin-actions`) that expect specific file structures and commands. By keeping the standard tooling working alongside our custom setup, we can verify we haven't accidentally broken compatibility with the broader Grafana ecosystem. The conformance workflows act as integration tests against Grafana's expectations.
+```bash
+pnpm run build          # Build frontend
+mage buildAll           # Build backend (all platforms)
+mage coverage           # Run backend tests with coverage
+pnpm run server         # Start Grafana via docker-compose
+```
 
 ## Test
 
