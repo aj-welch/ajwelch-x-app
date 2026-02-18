@@ -2,6 +2,9 @@
 # Custom static analysis pipeline. Intentionally overlaps with ci.yml in some
 # areas (e.g. golangci-lint) because ci.yml is owned by Grafana plugin tooling
 # and exists for plugin conformance, not general code quality.
+#
+# Prerequisites:
+#   Add CACHIX_AUTH_TOKEN as a repo secret (from https://app.cachix.org/cache/aj-welch)
 name: Analyze
 
 on:
@@ -29,7 +32,13 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install Node dependencies
-        run: nix develop --command pnpm install --frozen-lockfile --prefer-offline
+      - uses: cachix/cachix-action@v15
+        with:
+          name: aj-welch
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - name: Analyze
-        run: nix develop --command mage analyze:check
+        run: |
+          nix develop --command bash -c "
+            pnpm install --frozen-lockfile --prefer-offline &&
+            mage analyze:check
+          "
