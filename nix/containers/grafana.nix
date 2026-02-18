@@ -6,6 +6,7 @@ let
 
   entrypoint = pkgs.writeShellScript "grafana-entrypoint" ''
     set -e
+    mkdir -p /var/lib/grafana/plugins
     exec ${pkgs.grafana}/bin/grafana server \
       --homepath=${pkgs.grafana}/share/grafana "$@"
   '';
