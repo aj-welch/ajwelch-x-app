@@ -5,6 +5,7 @@
 - [Build](#build)
 - [Test](#test)
 - [Debug](#debug)
+- [Cachix](#cachix)
 - [Local Domains](#local-domains)
 
 ## Prerequisites
@@ -98,6 +99,20 @@ dlv connect localhost:2345
 ```
 
 The backend rebuilds automatically when Go files change, and delve reattaches.
+
+## Cachix
+
+[Cachix](https://cachix.org) provides a binary cache for the Nix devShell,
+avoiding local builds of all packages. One-time setup per machine:
+
+```bash
+nix-env -iA nixpkgs.cachix
+cachix use aj-welch
+```
+
+This registers `aj-welch.cachix.org` as a Nix substituter globally. Subsequent
+`nix develop` / `direnv allow` invocations pull packages from cache instead of
+building from source.
 
 ## Local Domains
 
