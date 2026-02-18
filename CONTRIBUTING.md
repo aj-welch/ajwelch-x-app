@@ -92,9 +92,9 @@ pnpm run server         # Start Grafana via docker-compose
 mage analyze:typecheck      # TypeScript type check
 mage analyze:lint           # ESLint
 mage analyze:lintBackend    # Go lint (golangci-lint)
-mage test:ci                # Jest unit tests
-mage test:backend           # Go unit tests
-mage test:e2e               # Playwright E2E (requires stack running)
+mage tests:ci               # Jest unit tests
+mage tests:backend          # Go unit tests
+mage tests:e2e              # Playwright E2E (requires stack running)
 ```
 
 ## Debug
