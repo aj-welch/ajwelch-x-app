@@ -1,0 +1,35 @@
+---
+# Custom static analysis pipeline. Intentionally overlaps with ci.yml in some
+# areas (e.g. golangci-lint) because ci.yml is owned by Grafana plugin tooling
+# and exists for plugin conformance, not general code quality.
+name: Analyze
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+    branches:
+      - master
+      - main
+
+permissions: read-all
+
+jobs:
+  analyze:
+    name: Static analysis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Node dependencies
+        run: nix develop --command pnpm install --frozen-lockfile --prefer-offline
+      - name: Analyze
+        run: nix develop --command mage analyze:check

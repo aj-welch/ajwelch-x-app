@@ -89,6 +89,10 @@ pre-push:
       exclude: ["internal/twitterapiio/sdk/sdk.go", "magefiles/development.go"]
       run: editorconfig-checker {push_files}
 
+    eslint:
+      glob: "*.{ts,tsx,js,jsx,json}"
+      run: pnpm run lint
+
     go-generate:
       glob: "*.{go,sql}"
       run: go generate ./...
@@ -150,6 +154,10 @@ pre-push:
       glob: "*.toml"
       run: taplo check {push_files}
 
+    typecheck:
+      glob: "*.{ts,tsx}"
+      run: pnpm exec tsc --noEmit
+
     yamllint:
       glob: "*.{yaml,yml}"
       run: yamllint -s {push_files}
@@ -157,6 +165,10 @@ pre-push:
 fix:
   parallel: true
   commands:
+    eslint-fix:
+      glob: "*.{ts,tsx,js,jsx,json}"
+      run: pnpm run lint:fix
+
     go-mod-tidy-fix:
       run: go mod tidy
 
