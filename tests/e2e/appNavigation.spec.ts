@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures';
-import { ROUTES } from '../src/constants';
+import { ROUTES } from '../../src/constants';
 
 test.describe('navigating app', () => {
   test('page Hello World should render successfully', async ({ gotoPage, page }) => {
