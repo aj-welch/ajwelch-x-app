@@ -114,6 +114,12 @@ linters:
       - common-false-positives
       - legacy
       - std-error-handling
+    rules:
+      - linters:
+          - dupl
+          - funlen
+          - lll
+        path: _test\.go
     paths:
       - .*\.gen\.go
       - .*\.pb\.go
@@ -137,16 +143,10 @@ formatters:
       extra-rules: true
       module-path: github.com/aj-welch/ajwelch-x-app
     goimports:
-      local-prefixes: github.com/aj-welch/ajwelch-x-app
+      local-prefixes:
+        - github.com/aj-welch/ajwelch-x-app
 
 issues:
-  exclude-rules:
-    - linters:
-        - dupl
-        - funlen
-        - lll
-      path: _test\.go
-  exclude-use-default: false
   max-same-issues: 50
 
 run:
