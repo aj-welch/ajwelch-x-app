@@ -18,7 +18,7 @@ local_resource(
 custom_build(
     'localhost:5000/ajwelch-x-app',
     'mage build:container && docker tag ajwelch-x-app:dev $EXPECTED_REF && docker push $EXPECTED_REF',
-    deps=['nix/containers/', 'dist/'],
+    deps=['nix/', 'dist/'],
     live_update=[
         sync('dist/', '/var/lib/grafana/plugins/ajwelch-x-app/'),
     ],

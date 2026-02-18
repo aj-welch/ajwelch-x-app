@@ -30,6 +30,8 @@ spec:
               value: "false"
             - name: GF_DEFAULT_APP_MODE
               value: development
+            - name: GF_PATHS_PROVISIONING
+              value: /etc/grafana/provisioning
           securityContext:
             capabilities:
               add:

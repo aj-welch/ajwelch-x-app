@@ -2,7 +2,7 @@
   description = "Grafana plugin development environment";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/fa56d7d6";
     flake-utils.url = "github:numtide/flake-utils";
     localias.url = "github:peterldowns/localias";
   };
@@ -26,10 +26,10 @@
 
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
-            customPkgs.twitterapiio
+            customPkgs.twitterapi-io
             delve
             docker-client
-            go_1_24
+            go_1_25
             golangci-lint
             k3d
             kubectl
