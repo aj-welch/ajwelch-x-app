@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0](https://github.com/aj-welch/ajwelch-x-app/compare/ajwelch-x-app-v0.4.0...ajwelch-x-app-v0.5.0) (2026-02-18)
+
+
+### Features
+
+* add frontend linting to pre-push hook and analyze GH action ([648a771](https://github.com/aj-welch/ajwelch-x-app/commit/648a771c61f8274264d31cf94e428bdd9ef2c4d0))
+
+
+### Bug Fixes
+
+* normalize CHANGELOG.md list style for markdownlint ([f45d6e4](https://github.com/aj-welch/ajwelch-x-app/commit/f45d6e4b5c1e09f1c23a9d0ee0dfd6bb87ea0718))
+* update golangci-lint config for v2.10.1 schema changes ([c9c4191](https://github.com/aj-welch/ajwelch-x-app/commit/c9c4191538d983ae35cd11b41f6c0b2e2482d224))
+* use Cachix (aj-welch) to cache Nix store for analyze workflow ([f1cc7dd](https://github.com/aj-welch/ajwelch-x-app/commit/f1cc7dde8a93679cda3c9e26c46c05f3c58244f2))
+
 ## [0.4.0](https://github.com/aj-welch/ajwelch-x-app/compare/ajwelch-x-app-v0.3.0...ajwelch-x-app-v0.4.0) (2026-02-18)
 
 ### Features
