@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.4.0](https://github.com/aj-welch/ajwelch-x-app/compare/ajwelch-x-app-v0.3.0...ajwelch-x-app-v0.4.0) (2026-02-18)
+
+
+### Features
+
+* Nix-based CI with version matrix and unified Tiltfile ([1d5d645](https://github.com/aj-welch/ajwelch-x-app/commit/1d5d6455ce824f3ad20e458810ce6cc15dbebb70))
+* restore conformance files and reorganize docs ([b3871ac](https://github.com/aj-welch/ajwelch-x-app/commit/b3871acfb2e9dd9c49657439e1d9328ccfd9eeed))
+
+
+### Bug Fixes
+
+* install Gateway API CRDs before applying development overlay ([b5d1b50](https://github.com/aj-welch/ajwelch-x-app/commit/b5d1b503570915c004be684ce73c56c4c85b0303))
+* mg.Deps return value in BuildAll ([17025fa](https://github.com/aj-welch/ajwelch-x-app/commit/17025fa13bbd97ed11ec992c463408a168866cd9))
+* rename Test namespace to Tests, add top-level Test() for ci.yml ([0eceb85](https://github.com/aj-welch/ajwelch-x-app/commit/0eceb856f5ecd3a84228ae6dfb6d5fc41313fc29))
+* resolve Tilt registry mangling for k3d local dev ([51c974d](https://github.com/aj-welch/ajwelch-x-app/commit/51c974d871fbd86456d181a4ce300da263a866db))
+* update k3s to v1.32.2-k3s1 ([511a5a4](https://github.com/aj-welch/ajwelch-x-app/commit/511a5a40ef7c12a0cdb10b458e89fc1af92cd1e0))
+
 ## [0.3.0](https://github.com/aj-welch/ajwelch-x-app/compare/ajwelch-x-app-v0.2.0...ajwelch-x-app-v0.3.0) (2026-02-17)
 
 
